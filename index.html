@@ -15,28 +15,38 @@
         <button type="submit">Upload</button>
     </form>
 
-    <div id="downloadLink" style="display: none;">
-        <h2>Download Link:</h2>
-        <a id="downloadButton" download>Download File</a>
+    <div id="shareableLink" style="display: none;">
+        <h2>Shareable Link:</h2>
+        <input type="text" id="linkInput" readonly>
+        <button onclick="copyLink()">Copy Link</button>
     </div>
 
     <script>
+        function copyLink() {
+            const linkInput = document.getElementById('linkInput');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('Link copied to clipboard!');
+        }
+
         document.getElementById('uploadForm').addEventListener('submit', function (event) {
             event.preventDefault();
-            
             const fileInput = document.getElementById('fileInput');
-            const downloadLink = document.getElementById('downloadLink');
-            const downloadButton = document.getElementById('downloadButton');
+            const shareableLink = document.getElementById('shareableLink');
+            const linkInput = document.getElementById('linkInput');
 
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                const fileURL = URL.createObjectURL(file);
+                const reader = new FileReader();
 
-                downloadButton.href = fileURL;
-                downloadButton.innerText = `Download ${file.name}`;
-                downloadButton.style.display = 'block';
+                reader.onload = function (event) {
+                    const fileDataURL = event.target.result;
 
-                downloadLink.style.display = 'block';
+                    linkInput.value = fileDataURL;
+                    shareableLink.style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
             }
         });
     </script>
