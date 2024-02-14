@@ -31,22 +31,18 @@
 
         document.getElementById('uploadForm').addEventListener('submit', function (event) {
             event.preventDefault();
+
             const fileInput = document.getElementById('fileInput');
             const shareableLink = document.getElementById('shareableLink');
             const linkInput = document.getElementById('linkInput');
 
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                const reader = new FileReader();
+                const blob = new Blob([file], { type: file.type });
+                const fileURL = URL.createObjectURL(blob);
 
-                reader.onload = function (event) {
-                    const fileDataURL = event.target.result;
-
-                    linkInput.value = fileDataURL;
-                    shareableLink.style.display = 'block';
-                };
-
-                reader.readAsDataURL(file);
+                linkInput.value = fileURL;
+                shareableLink.style.display = 'block';
             }
         });
     </script>
